@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파크원 Tower 1 — 오피스 투자가치평가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface2: #f0efe9;
+  --border: #dddbd4;
+  --text: #1a1917;
+  --text2: #5a5854;
+  --text3: #9a9890;
+  --blue: #1a56c4;
+  --blue-bg: #eef2fc;
+  --blue-border: #c5d3f5;
+  --green: #186b37;
+  --green-bg: #eaf3e0;
+  --red: #a32222;
+  --red-bg: #fceaea;
+  --amber: #92520a;
+  --amber-bg: #fef3e0;
+  --accent: #1a56c4;
+  --navy: #0f1f4a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+.mono{font-family:'DM Mono',monospace}
+
+/* layout */
+header{background:var(--navy);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.08)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-tag{background:rgba(255,255,255,.12);color:#fff;font-size:10px;padding:3px 8px;border-radius:4px;letter-spacing:1px;font-weight:500}
+.logo-title{color:#fff;font-size:18px;font-weight:700;letter-spacing:-.3px}
+.logo-sub{color:rgba(255,255,255,.5);font-size:12px;margin-top:1px}
+.header-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:11px;padding:4px 10px;border-radius:4px}
+
+main{max-width:1200px;margin:0 auto;padding:2rem}
+
+/* metric cards */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.25rem}
+.metric-label{font-size:11px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.metric-val{font-size:26px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text);transition:color .3s}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.irr-positive{color:var(--blue)!important}
+.irr-good{color:var(--green)!important}
+.irr-negative{color:var(--red)!important}
+
+/* main grid */
+.main-grid{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start}
+
+/* controls */
+.controls{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;position:sticky;top:80px}
+.ctrl-section{margin-bottom:1.25rem}
+.ctrl-section:last-child{margin-bottom:0}
+.ctrl-section-title{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);font-weight:500;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.inp-row{display:flex;align-items:center;gap:8px;margin-bottom:.6rem}
+.inp-label{font-size:11px;color:var(--text2);width:110px;flex-shrink:0;line-height:1.3}
+.inp-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+.inp-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--navy);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.inp-row input[type=range]::-webkit-slider-thumb:hover{background:var(--blue)}
+.inp-val{font-size:11px;font-weight:500;color:var(--text);min-width:72px;text-align:right;font-family:'DM Mono',monospace}
+
+/* reset button */
+.reset-btn{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;margin-top:.5rem}
+.reset-btn:hover{background:var(--surface2);color:var(--text)}
+
+/* right panel */
+.right-panel{display:flex;flex-direction:column;gap:14px}
+
+/* tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--text2);font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.tab-btn:hover{background:var(--surface2)}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* panel */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.panel-title{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);font-weight:500;margin-bottom:1rem}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--surface2);font-weight:500;padding:7px 10px;text-align:center;border:1px solid var(--border);font-size:11px;color:var(--text2)}
+.tbl th.lbl{text-align:left}
+.tbl td{padding:6px 10px;text-align:right;border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px}
+.tbl td.lbl{text-align:left;color:var(--text2);font-family:'Noto Sans KR',sans-serif;font-size:11px}
+.tbl tr.total td{background:var(--surface2);font-weight:500}
+.tbl tr.navy td,.tbl tr.navy td.lbl{background:var(--navy);color:#fff;font-family:'DM Mono',monospace}
+.tbl tr.navy td.lbl{font-family:'Noto Sans KR',sans-serif}
+.tbl tr.group-hdr td{background:#e8ecf8;color:var(--navy);font-weight:500;font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.3px}
+.cf-neg{color:var(--red)!important}
+.pos{color:var(--green);font-weight:500}
+.neg{color:var(--red);font-weight:500}
+.cur-cell{background:var(--blue-bg)!important}
+.tbl tr:hover td{background:var(--surface2)}
+.tbl tr.navy:hover td,.tbl tr.navy:hover td.lbl{background:var(--navy)}
+.tbl tr.total:hover td,.tbl tr.group-hdr:hover td{background:inherit}
+
+/* sensitivity highlight */
+.hl-cur{background:var(--blue-bg)!important;font-weight:500}
+
+/* badge */
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;letter-spacing:.3px}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+
+/* source note */
+.note{font-size:10px;color:var(--text3);margin-top:.75rem;line-height:1.6}
+
+/* chart container */
+.chart-wrap{position:relative;width:100%;height:220px;margin-top:.5rem}
+
+/* responsive */
+@media(max-width:900px){
+  .main-grid{grid-template-columns:1fr}
+  .controls{position:static}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  .metrics{grid-template-columns:1fr 1fr}
+  main{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="logo-tag">YBD · 2020</span>
+          <span class="logo-title">파크원 Tower 1</span>
+        </div>
+        <div class="logo-sub">오피스 투자가치평가 — 상업용부동산컨설팅사례연구</div>
+      </div>
+    </div>
+    <div class="header-badge">연면적 64,722평 · 69F/B7</div>
+  </div>
+</header>
+
+<main>
+
+<!-- Metric Cards -->
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-label">적정 매입금액</div>
+    <div class="metric-val mono" id="m-purchase">—</div>
+    <div class="metric-sub" id="m-purchase-py">평당 — 만원</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Year 1 NOI</div>
+    <div class="metric-val mono" id="m-noi">—</div>
+    <div class="metric-sub" id="m-coc-sub">CoC —</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">자기자본 (Equity)</div>
+    <div class="metric-val mono" id="m-equity">—</div>
+    <div class="metric-sub" id="m-loan-sub">대출 —</div>
+  </div>
+  <div class="metric" id="irr-card">
+    <div class="metric-label">Equity IRR</div>
+    <div class="metric-val mono" id="m-irr">—</div>
+    <div class="metric-sub" id="m-irr-badge"></div>
+  </div>
+</div>
+
+<div class="main-grid">
+
+<!-- Controls -->
+<div class="controls">
+  <div class="ctrl-section">
+    <div class="ctrl-section-title">임대 조건</div>
+    <div class="inp-row"><span class="inp-label">보증금 (원/평)</span><input type="range" id="s-dep" min="1000000" max="2500000" step="10000" value="1477000"><span class="inp-val" id="v-dep">1,477,000</span></div>
+    <div class="inp-row"><span class="inp-label">월임대료 (원/평)</span><input type="range" id="s-rent" min="100000" max="250000" step="1000" value="147700"><span class="inp-val" id="v-rent">147,700</span></div>
+    <div class="inp-row"><span class="inp-label">월관리비 (원/평)</span><input type="range" id="s-mgmt" min="30000" max="100000" step="1000" value="54700"><span class="inp-val" id="v-mgmt">54,700</span></div>
+    <div class="inp-row"><span class="inp-label">공실률 (%)</span><input type="range" id="s-vac" min="0" max="20" step="0.5" value="5"><span class="inp-val" id="v-vac">5.0%</span></div>
+    <div class="inp-row"><span class="inp-label">임대료 상승률</span><input type="range" id="s-rg" min="0" max="5" step="0.5" value="2"><span class="inp-val" id="v-rg">2.0%</span></div>
+    <div class="inp-row"><span class="inp-label">보증금 운용이자율</span><input type="range" id="s-dy" min="1" max="5" step="0.5" value="2.5"><span class="inp-val" id="v-dy">2.5%</span></div>
+  </div>
+  <div class="ctrl-section">
+    <div class="ctrl-section-title">투자 조건</div>
+    <div class="inp-row"><span class="inp-label">매입 Cap. Rate</span><input type="range" id="s-crb" min="2.5" max="6" step="0.1" value="3.8"><span class="inp-val" id="v-crb">3.8%</span></div>
+    <div class="inp-row"><span class="inp-label">매각 Cap. Rate</span><input type="range" id="s-crs" min="2.5" max="6" step="0.1" value="4.0"><span class="inp-val" id="v-crs">4.0%</span></div>
+    <div class="inp-row"><span class="inp-label">LTV (%)</span><input type="range" id="s-ltv" min="30" max="70" step="5" value="60"><span class="inp-val" id="v-ltv">60%</span></div>
+    <div class="inp-row"><span class="inp-label">대출이자율</span><input type="range" id="s-lr" min="2" max="8" step="0.5" value="4.5"><span class="inp-val" id="v-lr">4.5%</span></div>
+    <div class="inp-row"><span class="inp-label">취득세+기타</span><input type="range" id="s-at" min="3" max="8" step="0.5" value="5"><span class="inp-val" id="v-at">5.0%</span></div>
+    <div class="inp-row"><span class="inp-label">매입부대비용</span><input type="range" id="s-af" min="0.5" max="3" step="0.5" value="2"><span class="inp-val" id="v-af">2.0%</span></div>
+    <div class="inp-row"><span class="inp-label">리모델링 (만원/평)</span><input type="range" id="s-rn" min="0" max="300" step="10" value="50"><span class="inp-val" id="v-rn">50만</span></div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ 기본값으로 초기화</button>
+  <div class="note">
+    Source: 교보리얼코 Leasing Flyer 2026.02<br>
+    GenstarMate Korea Office Market Report Q4 2025<br>
+    상업용부동산컨설팅사례연구 중간고사 대체과제
+  </div>
+</div>
+
+<!-- Right Panel -->
+<div class="right-panel">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('cf')">Cashflow 표</button>
+    <button class="tab-btn" onclick="showTab('s1')">민감도 ① 공실률</button>
+    <button class="tab-btn" onclick="showTab('s2')">민감도 ② 임대료↑</button>
+    <button class="tab-btn" onclick="showTab('s3')">민감도 ③ 대출금리</button>
+    <button class="tab-btn" onclick="showTab('s4')">민감도 ④ 리모델링</button>
+  </div>
+
+  <div id="tab-cf" class="panel">
+    <div class="panel-title">5년 Cashflow 분석</div>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="cf-table">
+        <thead>
+          <tr>
+            <th class="lbl" style="min-width:140px">항목</th>
+            <th>Y+0 (매입)</th><th>Y+1</th><th>Y+2</th><th>Y+3</th><th>Y+4</th><th>Y+5 (매각)</th>
+          </tr>
+        </thead>
+        <tbody id="cf-body"></tbody>
+      </table>
+    </div>
+    <div class="note">★ 운영 Y+6 NOI 기준 매각가 산정 · 영업경비 = 관리비×80% · 대출이자율 고정 가정</div>
+  </div>
+
+  <div id="tab-s1" class="panel" style="display:none">
+    <div class="panel-title">민감도 ① — 공실률 × 매각 Cap. Rate → Equity IRR</div>
+    <div style="overflow-x:auto"><div id="sens1-wrap"></div></div>
+    <div class="note">★ = 현재 설정값 · 임대료 상승률·대출이자율·리모델링 현재 값 고정</div>
+  </div>
+  <div id="tab-s2" class="panel" style="display:none">
+    <div class="panel-title">민감도 ② — 임대료 상승률 × 매각 Cap. Rate → Equity IRR</div>
+    <div style="overflow-x:auto"><div id="sens2-wrap"></div></div>
+    <div class="note">★ = 현재 설정값 · 공실률·대출이자율·리모델링 현재 값 고정</div>
+  </div>
+  <div id="tab-s3" class="panel" style="display:none">
+    <div class="panel-title">민감도 ③ — 대출이자율 × 매각 Cap. Rate → Equity IRR</div>
+    <div style="overflow-x:auto"><div id="sens3-wrap"></div></div>
+    <div class="note">★ = 현재 설정값 · 공실률·임대료 상승률·리모델링 현재 값 고정</div>
+  </div>
+  <div id="tab-s4" class="panel" style="display:none">
+    <div class="panel-title">민감도 ④ — 리모델링비용 × 매각 Cap. Rate → Equity IRR</div>
+    <div style="overflow-x:auto"><div id="sens4-wrap"></div></div>
+    <div class="note">★ = 현재 설정값 · 공실률·임대료 상승률·대출이자율 현재 값 고정</div>
+  </div>
+
+</div>
+</div>
+
+</main>
+
+<script>
+const GFA = 64722.27;
+const OG = 0.02;
+const OR_ = 0.80;
+const SALE_FEE_R = 0.01;
+
+const DEFAULTS = {dep:1477000,rent:147700,mgmt:54700,vac:5,rg:2,dy:2.5,crb:3.8,crs:4.0,ltv:60,lr:4.5,at_:5,af_:2,rn:50};
+
+function getP(){
+  return {
+    dep:+document.getElementById('s-dep').value,
+    rent:+document.getElementById('s-rent').value,
+    mgmt:+document.getElementById('s-mgmt').value,
+    vac:+document.getElementById('s-vac').value/100,
+    rg:+document.getElementById('s-rg').value/100,
+    dy:+document.getElementById('s-dy').value/100,
+    crb:+document.getElementById('s-crb').value/100,
+    crs:+document.getElementById('s-crs').value/100,
+    ltv:+document.getElementById('s-ltv').value/100,
+    lr:+document.getElementById('s-lr').value/100,
+    at_:+document.getElementById('s-at').value/100,
+    af_:+document.getElementById('s-af').value/100,
+    rn:+document.getElementById('s-rn').value*10000
+  };
+}
+
+function calcIRR(cfs){
+  function npv(r){return cfs.reduce((s,c,i)=>s+c/Math.pow(1+r,i),0);}
+  let lo=-0.99,hi=10;
+  if(npv(lo)*npv(hi)>0)return null;
+  for(let i=0;i<100;i++){const m=(lo+hi)/2;npv(m)>0?lo=m:hi=m;}
+  return (lo+hi)/2;
+}
+
+function compute(p){
+  const pgiPpy = p.dep*p.dy + p.rent*12 + p.mgmt*12;
+  const PGI = pgiPpy*GFA;
+  const EGI = PGI*(1-p.vac);
+  const OPEX = p.mgmt*12*GFA*(1-p.vac)*OR_;
+  const NOI = EGI - OPEX;
+  const PURCHASE = NOI/p.crb;
+  const LOAN = PURCHASE*p.ltv;
+  const RENO = p.rn*GFA;
+  const TOTAL = PURCHASE + PURCHASE*p.at_ + PURCHASE*p.af_ + RENO;
+  const EQUITY = TOTAL - LOAN;
+  const LINT = LOAN*p.lr;
+
+  const nois=[],cfs=[],deps=[],rents=[],mgmts=[],dis=[],opexs=[];
+  for(let yr=1;yr<=6;yr++){
+    const g=Math.pow(1+p.rg,yr-1);
+    const egi_y=pgiPpy*GFA*(1-p.vac)*g;
+    const dep_y=p.dep*GFA*(1-p.vac)*g;
+    const rent_y=p.rent*12*GFA*(1-p.vac)*g;
+    const mgmt_y=p.mgmt*12*GFA*(1-p.vac)*g;
+    const di_y=p.dep*GFA*(1-p.vac)*g*p.dy;
+    const opex_y=p.mgmt*12*GFA*(1-p.vac)*OR_*Math.pow(1+OG,yr-1);
+    const noi_y=egi_y-opex_y;
+    deps.push(dep_y);rents.push(rent_y);mgmts.push(mgmt_y);dis.push(di_y);opexs.push(opex_y);nois.push(noi_y);
+    if(yr<=5)cfs.push(noi_y-LINT);
+  }
+  const NOI_Y6=nois[5];
+  const SALE=NOI_Y6/p.crs;
+  const SALE_FEE_AMT=SALE*SALE_FEE_R;
+  const SALE_NET=SALE-SALE_FEE_AMT-LOAN;
+  const eqCfs=[-EQUITY,...cfs.slice(0,4),cfs[4]+SALE_NET];
+  const IRR=calcIRR(eqCfs);
+  return {NOI,PURCHASE,LOAN,RENO,TOTAL,EQUITY,LINT,cfs,nois,
+    deps,rents,mgmts,dis,opexs,SALE,SALE_NET,SALE_FEE_AMT,IRR,eqCfs,
+    AT_AMT:PURCHASE*p.at_,AF_AMT:PURCHASE*p.af_,COC:cfs[0]/EQUITY};
+}
+
+const fmt0=v=>(v/1e8).toFixed(1)+'억';
+const fmtN=v=>v!=null?((v>=0?'+':'')+v.toFixed(2)+'%'):'—';
+const ko=v=>v.toLocaleString('ko-KR');
+
+function renderMetrics(r,p){
+  document.getElementById('m-purchase').textContent=(r.PURCHASE/1e8).toFixed(0)+'억원';
+  document.getElementById('m-purchase-py').textContent='평당 '+(r.PURCHASE/GFA/10000).toFixed(0)+'만원';
+  document.getElementById('m-noi').textContent=(r.NOI/1e8).toFixed(0)+'억원';
+  document.getElementById('m-coc-sub').textContent='CoC '+(r.COC*100).toFixed(2)+'% (Y1)';
+  document.getElementById('m-equity').textContent=(r.EQUITY/1e8).toFixed(0)+'억원';
+  document.getElementById('m-loan-sub').textContent='대출 '+(r.LOAN/1e8).toFixed(0)+'억 (LTV '+(p.ltv*100).toFixed(0)+'%)';
+  const irr=r.IRR!=null?r.IRR*100:null;
+  const irrEl=document.getElementById('m-irr');
+  const badgeEl=document.getElementById('m-irr-badge');
+  irrEl.className='metric-val mono';
+  if(irr!=null){
+    irrEl.textContent=(irr>=0?'+':'')+irr.toFixed(2)+'%';
+    if(irr>=6){irrEl.classList.add('irr-good');badgeEl.innerHTML='<span class="badge badge-green">목표 달성</span>';}
+    else if(irr>=0){irrEl.classList.add('irr-positive');badgeEl.innerHTML='<span class="badge badge-amber">목표 미달</span>';}
+    else{irrEl.classList.add('irr-negative');badgeEl.innerHTML='<span class="badge badge-red">손실 구간</span>';}
+  }
+}
+
+function renderCF(r,p){
+  const B=v=>v!=null?fmt0(v):'—';
+  const N=v=>{if(v==null)return '—';const s=(v/1e8).toFixed(1);return v<0?'<span class="cf-neg">'+s+'억</span>':s+'억';}
+  const rows=[
+    {lbl:'투자비 총액',    y0:r.TOTAL,   vals:[null,null,null,null,null,null], cls:'total'},
+    {lbl:'  매입금액',     y0:r.PURCHASE,vals:[null,null,null,null,null,null]},
+    {lbl:'  취득세·기타', y0:r.AT_AMT,  vals:[null,null,null,null,null,null]},
+    {lbl:'  매입부대비용', y0:r.AF_AMT,  vals:[null,null,null,null,null,null]},
+    {lbl:'  리모델링',     y0:r.RENO,    vals:[null,null,null,null,null,null]},
+    {lbl:'대출금',         y0:r.LOAN,    vals:[null,null,null,null,null,null]},
+    {lbl:'자기자본 (Equity)',y0:r.EQUITY,vals:[null,null,null,null,null,null],cls:'total'},
+    {sep:true},
+    {lbl:'보증금',         y0:null, vals:[...r.deps.slice(0,5),r.deps[5]]},
+    {lbl:'연임대료',       y0:null, vals:[...r.rents.slice(0,5),r.rents[5]]},
+    {lbl:'보증금 운용이자',y0:null, vals:[...r.dis.slice(0,5),r.dis[5]]},
+    {lbl:'영업경비 (△)',  y0:null, vals:[...r.opexs.slice(0,5).map(v=>-v),-r.opexs[5]]},
+    {lbl:'NOI',            y0:null, vals:[...r.nois.slice(0,5),r.nois[5]], cls:'total'},
+    {lbl:'대출이자 (△)',  y0:null, vals:[r.LINT,r.LINT,r.LINT,r.LINT,r.LINT,null].map(v=>v?-v:null)},
+    {lbl:'세전 현금흐름',  y0:null, vals:[...r.cfs,null], cls:'total'},
+    {sep:true},
+    {lbl:'매각금액',       y0:null, vals:[null,null,null,null,r.SALE]},
+    {lbl:'매각비용 (△)',  y0:null, vals:[null,null,null,null,-r.SALE_FEE_AMT]},
+    {lbl:'대출 상환 (△)', y0:null, vals:[null,null,null,null,-r.LOAN]},
+    {lbl:'매각 순현금흐름',y0:null, vals:[null,null,null,null,r.SALE_NET], cls:'total'},
+    {sep:true},
+    {lbl:'Equity Cashflow',y0:-r.EQUITY, vals:[...r.cfs.slice(0,4),r.cfs[4]+r.SALE_NET,null], cls:'navy'},
+  ];
+
+  document.getElementById('cf-body').innerHTML=rows.map(row=>{
+    if(row.sep)return '<tr><td colspan="7" style="border:none;height:6px;background:transparent"></td></tr>';
+    const cls=row.cls||'';
+    const tds=([row.y0,...(row.vals||[])]).map((v,i)=>{
+      if(v==null)return `<td>—</td>`;
+      const s=(v/1e8).toFixed(1)+'억';
+      const color=v<0&&cls!=='navy'?' style="color:#a32222"':'';
+      return `<td${color}>${s}</td>`;
+    }).join('');
+    return `<tr class="${cls}"><td class="lbl">${row.lbl}</td>${tds}</tr>`;
+  }).join('');
+}
+
+const CR_COLS=[3.5,3.8,4.0,4.25,4.5];
+
+function renderSens(divId, rowVals, rowKey, baseP, isReno){
+  const p=baseP;
+  let html=`<table class="tbl"><thead><tr><th class="lbl">`;
+  html+=isReno?'리모델링 (만원/평)':rowKey==='vac'?'공실률':rowKey==='rg'?'임대료 상승률':'대출이자율';
+  html+='</th>';
+  CR_COLS.forEach(c=>{
+    const cur=Math.abs(c-p.crs*100)<0.01;
+    html+=`<th class="${cur?'hl-cur':''}">${c}%${cur?' ★':''}</th>`;
+  });
+  html+='</tr></thead><tbody>';
+
+  rowVals.forEach(rv=>{
+    const actualRv=isReno?rv*10000:rv/100;
+    const curR=isReno?Math.abs(actualRv-p.rn)<1:Math.abs(actualRv-p[rowKey])<0.0001;
+    html+=`<tr><td class="lbl">${rv}${isReno?'만원/평':'%'}${curR?' ★':''}</td>`;
+    CR_COLS.forEach(cv=>{
+      const tp={...p};
+      if(isReno)tp.rn=actualRv; else tp[rowKey]=actualRv;
+      tp.crs=cv/100;
+      const r2=compute(tp);
+      const irr=r2.IRR!=null?r2.IRR*100:null;
+      const curC=Math.abs(cv-p.crs*100)<0.01;
+      const curBoth=curR&&curC;
+      const cls=irr==null?'':(irr>=0?'pos':'neg');
+      html+=`<td class="${cls}${curBoth?' hl-cur':''}">${irr!=null?fmtN(irr):'—'}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById(divId).innerHTML=html;
+}
+
+function update(){
+  const p=getP();
+  const r=compute(p);
+  renderMetrics(r,p);
+  renderCF(r,p);
+  renderSens('sens1-wrap',[3,5,7,9],'vac',p,false);
+  renderSens('sens2-wrap',[1.5,2.0,2.5,3.0],'rg',p,false);
+  renderSens('sens3-wrap',[4.0,4.5,5.0,5.5],'lr',p,false);
+  renderSens('sens4-wrap',[0,50,100,150],'rn',p,true);
+}
+
+function showTab(id){
+  ['cf','s1','s2','s3','s4'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===id?'block':'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{
+    btn.classList.toggle('active',['cf','s1','s2','s3','s4'][i]===id);
+  });
+}
+
+function resetAll(){
+  const d=DEFAULTS;
+  const set=(id,v)=>{ document.getElementById(id).value=v; };
+  set('s-dep',d.dep);set('s-rent',d.rent);set('s-mgmt',d.mgmt);
+  set('s-vac',d.vac);set('s-rg',d.rg);set('s-dy',d.dy);
+  set('s-crb',d.crb);set('s-crs',d.crs);set('s-ltv',d.ltv);
+  set('s-lr',d.lr);set('s-at',d.at_);set('s-af',d.af_);set('s-rn',d.rn);
+  updateLabels(); update();
+}
+
+function updateLabels(){
+  document.getElementById('v-dep').textContent=Number(document.getElementById('s-dep').value).toLocaleString();
+  document.getElementById('v-rent').textContent=Number(document.getElementById('s-rent').value).toLocaleString();
+  document.getElementById('v-mgmt').textContent=Number(document.getElementById('s-mgmt').value).toLocaleString();
+  document.getElementById('v-vac').textContent=document.getElementById('s-vac').value+'%';
+  document.getElementById('v-rg').textContent=document.getElementById('s-rg').value+'%';
+  document.getElementById('v-dy').textContent=document.getElementById('s-dy').value+'%';
+  document.getElementById('v-crb').textContent=document.getElementById('s-crb').value+'%';
+  document.getElementById('v-crs').textContent=document.getElementById('s-crs').value+'%';
+  document.getElementById('v-ltv').textContent=document.getElementById('s-ltv').value+'%';
+  document.getElementById('v-lr').textContent=document.getElementById('s-lr').value+'%';
+  document.getElementById('v-at').textContent=document.getElementById('s-at').value+'%';
+  document.getElementById('v-af').textContent=document.getElementById('s-af').value+'%';
+  document.getElementById('v-rn').textContent=document.getElementById('s-rn').value+'만';
+}
+
+['dep','rent','mgmt','vac','rg','dy','crb','crs','ltv','lr','at','af','rn'].forEach(k=>{
+  const id='s-'+k; const vid='v-'+k;
+  document.getElementById(id).addEventListener('input',()=>{updateLabels();update();});
+});
+
+update();
+</script>
+</body>
+</html>
