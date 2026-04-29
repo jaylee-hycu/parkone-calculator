@@ -352,13 +352,30 @@ function compute(p){
     if(yr<=5)cfs.push(noi_y-LINT);
   }
   const NOI_Y6=nois[5];
-  const SALE=NOI_Y6/p.crs;
+  const SALE=NOI_Y6/p.crs;                    // 매각금액 (gross, 부대비용 전)
   const SALE_FEE_AMT=SALE*SALE_FEE_R;
-  const SALE_NET=SALE-SALE_FEE_AMT-LOAN;
+
+  // 양도세 (법인세+지방소득세): 과세표준 = 매각금액 - 매입금액 - 취득비용
+  const ACQ_COST = PURCHASE*p.at_ + PURCHASE*p.af_ + RENO;
+  const CAP_GAIN = SALE - PURCHASE - ACQ_COST;   // 매각차익 (과세표준)
+  function calcCapTax(g){
+    if(g<=0) return 0;
+    const bands=[[200e6,0.11],[20e9,0.22],[300e9,0.242],[Infinity,0.275]];
+    let tax=0, prev=0;
+    for(const [lim,rate] of bands){
+      if(g<=prev) break;
+      tax+=(Math.min(g,lim)-prev)*rate;
+      prev=lim;
+    }
+    return tax;
+  }
+  const CAP_TAX=calcCapTax(CAP_GAIN);
+
+  const SALE_NET=SALE-CAP_TAX-SALE_FEE_AMT-LOAN;
   const eqCfs=[-EQUITY,...cfs.slice(0,4),cfs[4]+SALE_NET];
   const IRR=calcIRR(eqCfs);
   return {NOI,PURCHASE,LOAN,RENO,TOTAL,EQUITY,LINT,cfs,nois,
-    deps,rents,mgmts,dis,opexs,SALE,SALE_NET,SALE_FEE_AMT,IRR,eqCfs,
+    deps,rents,mgmts,dis,opexs,SALE,SALE_NET,SALE_FEE_AMT,CAP_GAIN,CAP_TAX,IRR,eqCfs,
     AT_AMT:PURCHASE*p.at_,AF_AMT:PURCHASE*p.af_,COC:cfs[0]/EQUITY};
 }
 
@@ -407,6 +424,7 @@ function renderCF(r,p){
     {lbl:'세전 현금흐름',  y0:null, vals:[...r.cfs,null], cls:'total'},
     {sep:true},
     {lbl:'매각금액',       y0:null, vals:[null,null,null,null,r.SALE]},
+    {lbl:'양도세 (△)',    y0:null, vals:[null,null,null,null,-r.CAP_TAX]},
     {lbl:'매각비용 (△)',  y0:null, vals:[null,null,null,null,-r.SALE_FEE_AMT]},
     {lbl:'대출 상환 (△)', y0:null, vals:[null,null,null,null,-r.LOAN]},
     {lbl:'매각 순현금흐름',y0:null, vals:[null,null,null,null,r.SALE_NET], cls:'total'},
