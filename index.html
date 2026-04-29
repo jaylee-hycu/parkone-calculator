@@ -64,10 +64,21 @@ main{max-width:1200px;margin:0 auto;padding:2rem}
 .inp-row{display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem}
 .inp-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .inp-label{font-size:11px;color:var(--text2);line-height:1.3}
+.inp-label.blue{color:var(--blue);font-weight:500}
+.inp-label.red{color:var(--red);font-weight:500}
 .inp-row input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
 .inp-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--navy);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .inp-row input[type=range]::-webkit-slider-thumb:hover{background:var(--blue)}
 .inp-val{font-size:11px;font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;white-space:nowrap}
+.inp-val.blue{color:var(--blue);font-weight:700}
+.inp-val.red{color:var(--red);font-weight:700}
+.inp-direct{font-size:11px;font-weight:500;color:var(--navy);font-family:'DM Mono',monospace;width:90px;text-align:right;border:1px solid var(--border);border-radius:4px;padding:2px 6px;background:var(--surface2);outline:none;transition:border-color .15s}
+.inp-direct:focus{border-color:var(--blue);background:#fff}
+.inp-direct::-webkit-inner-spin-button,.inp-direct::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=range].blue-thumb::-webkit-slider-thumb{background:var(--blue)!important}
+input[type=range].red-thumb::-webkit-slider-thumb{background:var(--red)!important}
+input[type=range].blue-thumb{background:linear-gradient(to right,var(--blue-bg),var(--blue-bg))}
+input[type=range].red-thumb{background:linear-gradient(to right,var(--red-bg),var(--red-bg))}
 
 /* reset button */
 .reset-btn{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;margin-top:.5rem}
@@ -97,8 +108,12 @@ main{max-width:1200px;margin:0 auto;padding:2rem}
 .tbl tr.navy td.lbl{font-family:'Noto Sans KR',sans-serif}
 .tbl tr.group-hdr td{background:#e8ecf8;color:var(--navy);font-weight:500;font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.3px}
 .cf-neg{color:var(--red)!important}
-.pos{color:var(--green);font-weight:500}
-.neg{color:var(--red);font-weight:500}
+.pos{color:var(--green);font-weight:600}
+.neg{color:var(--red);font-weight:600}
+.irr-ok{color:var(--green);font-weight:600}
+.irr-warn{color:var(--amber);font-weight:600}
+.irr-neg{color:var(--red);font-weight:600}
+.mid{color:var(--blue);font-weight:500}
 .cur-cell{background:var(--blue-bg)!important}
 .tbl tr:hover td{background:var(--surface2)}
 .tbl tr.navy:hover td,.tbl tr.navy:hover td.lbl{background:var(--navy)}
@@ -181,22 +196,22 @@ main{max-width:1200px;margin:0 auto;padding:2rem}
 <div class="controls">
   <div class="ctrl-section">
     <div class="ctrl-section-title">임대 조건</div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">보증금 (원/평)</span><span class="inp-val" id="v-dep">1,477,000</span></div><input type="range" id="s-dep" min="1000000" max="2500000" step="10000" value="1477000"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">월임대료 (원/평)</span><span class="inp-val" id="v-rent">147,700</span></div><input type="range" id="s-rent" min="100000" max="250000" step="1000" value="147700"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">월관리비 (원/평)</span><span class="inp-val" id="v-mgmt">54,700</span></div><input type="range" id="s-mgmt" min="30000" max="100000" step="1000" value="54700"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">공실률 (%)</span><span class="inp-val" id="v-vac">5.0%</span></div><input type="range" id="s-vac" min="0" max="20" step="0.5" value="5"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">임대료 상승률</span><span class="inp-val" id="v-rg">2.0%</span></div><input type="range" id="s-rg" min="0" max="5" step="0.5" value="2"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">보증금 (원/평)</span><input type="text" class="inp-direct" id="v-dep" value="1,477,000"></div><input type="range" id="s-dep" min="1000000" max="2500000" step="10000" value="1477000"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">월임대료 (원/평)</span><input type="text" class="inp-direct" id="v-rent" value="147,700"></div><input type="range" id="s-rent" min="100000" max="250000" step="1000" value="147700"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">월관리비 (원/평)</span><input type="text" class="inp-direct" id="v-mgmt" value="54,700"></div><input type="range" id="s-mgmt" min="30000" max="100000" step="1000" value="54700"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label blue">공실률 (%)</span><span class="inp-val blue" id="v-vac">5.0%</span></div><input type="range" class="blue-thumb" id="s-vac" min="0" max="20" step="0.5" value="5"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label blue">임대료 상승률</span><span class="inp-val blue" id="v-rg">2.0%</span></div><input type="range" class="blue-thumb" id="s-rg" min="0" max="5" step="0.5" value="2"></div>
     <div class="inp-row"><div class="inp-row-top"><span class="inp-label">보증금 운용이자율</span><span class="inp-val" id="v-dy">2.5%</span></div><input type="range" id="s-dy" min="1" max="5" step="0.5" value="2.5"></div>
   </div>
   <div class="ctrl-section">
     <div class="ctrl-section-title">투자 조건</div>
     <div class="inp-row"><div class="inp-row-top"><span class="inp-label">매입 Cap. Rate</span><span class="inp-val" id="v-crb">3.8%</span></div><input type="range" id="s-crb" min="2.5" max="6" step="0.1" value="3.8"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">매각 Cap. Rate</span><span class="inp-val" id="v-crs">4.0%</span></div><input type="range" id="s-crs" min="2.5" max="6" step="0.1" value="4.0"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label red">매각 Cap. Rate</span><span class="inp-val red" id="v-crs">4.0%</span></div><input type="range" class="red-thumb" id="s-crs" min="2.5" max="6" step="0.1" value="4.0"></div>
     <div class="inp-row"><div class="inp-row-top"><span class="inp-label">LTV (%)</span><span class="inp-val" id="v-ltv">60%</span></div><input type="range" id="s-ltv" min="30" max="70" step="5" value="60"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">대출이자율</span><span class="inp-val" id="v-lr">4.5%</span></div><input type="range" id="s-lr" min="2" max="8" step="0.5" value="4.5"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label blue">대출이자율</span><span class="inp-val blue" id="v-lr">4.5%</span></div><input type="range" class="blue-thumb" id="s-lr" min="2" max="8" step="0.5" value="4.5"></div>
     <div class="inp-row"><div class="inp-row-top"><span class="inp-label">취득세+기타</span><span class="inp-val" id="v-at">5.0%</span></div><input type="range" id="s-at" min="3" max="8" step="0.5" value="5"></div>
     <div class="inp-row"><div class="inp-row-top"><span class="inp-label">매입부대비용</span><span class="inp-val" id="v-af">2.0%</span></div><input type="range" id="s-af" min="0.5" max="3" step="0.5" value="2"></div>
-    <div class="inp-row"><div class="inp-row-top"><span class="inp-label">리모델링 (만원/평)</span><span class="inp-val" id="v-rn">50만</span></div><input type="range" id="s-rn" min="0" max="300" step="10" value="50"></div>
+    <div class="inp-row"><div class="inp-row-top"><span class="inp-label blue">리모델링 (만원/평)</span><span class="inp-val blue" id="v-rn">50만</span></div><input type="range" class="blue-thumb" id="s-rn" min="0" max="300" step="10" value="50"></div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ 기본값으로 초기화</button>
   <div class="note">
@@ -266,11 +281,13 @@ const SALE_FEE_R = 0.01;
 
 const DEFAULTS = {dep:1477000,rent:147700,mgmt:54700,vac:5,rg:2,dy:2.5,crb:3.8,crs:4.0,ltv:60,lr:4.5,at_:5,af_:2,rn:50};
 
+function parseComma(id){ return +document.getElementById(id).value.replace(/,/g,''); }
+
 function getP(){
   return {
-    dep:+document.getElementById('s-dep').value,
-    rent:+document.getElementById('s-rent').value,
-    mgmt:+document.getElementById('s-mgmt').value,
+    dep:parseComma('v-dep'),
+    rent:parseComma('v-rent'),
+    mgmt:parseComma('v-mgmt'),
     vac:+document.getElementById('s-vac').value/100,
     rg:+document.getElementById('s-rg').value/100,
     dy:+document.getElementById('s-dy').value/100,
@@ -421,7 +438,7 @@ function renderSens(divId, rowVals, rowKey, baseP, isReno){
       const irr=r2.IRR!=null?r2.IRR*100:null;
       const curC=Math.abs(cv-p.crs*100)<0.01;
       const curBoth=curR&&curC;
-      const cls=irr==null?'':(irr>=0?'pos':'neg');
+      const cls=irr==null?'':(irr>=6?'irr-ok':irr>=0?'irr-warn':'irr-neg');
       html+=`<td class="${cls}${curBoth?' hl-cur':''}">${irr!=null?fmtN(irr):'—'}</td>`;
     });
     html+='</tr>';
@@ -453,6 +470,10 @@ function showTab(id){
 function resetAll(){
   const d=DEFAULTS;
   const set=(id,v)=>{ document.getElementById(id).value=v; };
+  // 직접입력 3개는 콤마 포맷으로
+  document.getElementById('v-dep').value=d.dep.toLocaleString('ko-KR');
+  document.getElementById('v-rent').value=d.rent.toLocaleString('ko-KR');
+  document.getElementById('v-mgmt').value=d.mgmt.toLocaleString('ko-KR');
   set('s-dep',d.dep);set('s-rent',d.rent);set('s-mgmt',d.mgmt);
   set('s-vac',d.vac);set('s-rg',d.rg);set('s-dy',d.dy);
   set('s-crb',d.crb);set('s-crs',d.crs);set('s-ltv',d.ltv);
@@ -460,10 +481,24 @@ function resetAll(){
   updateLabels(); update();
 }
 
+function syncDirectToSlider(directId, sliderId, min, max){
+  const raw=parseComma(directId);
+  const clamped=Math.min(Math.max(raw,min),max);
+  document.getElementById(sliderId).value=clamped;
+  // 포맷 유지 (포커스 아웃 시)
+  document.getElementById(directId).value=clamped.toLocaleString('ko-KR');
+}
+
+function syncSliderToDirect(sliderId, directId){
+  const v=+document.getElementById(sliderId).value;
+  document.getElementById(directId).value=v.toLocaleString('ko-KR');
+}
+
 function updateLabels(){
-  document.getElementById('v-dep').textContent=Number(document.getElementById('s-dep').value).toLocaleString();
-  document.getElementById('v-rent').textContent=Number(document.getElementById('s-rent').value).toLocaleString();
-  document.getElementById('v-mgmt').textContent=Number(document.getElementById('s-mgmt').value).toLocaleString();
+  // 직접입력 3개는 슬라이더만 동기화 (값 표시는 input 자체)
+  syncDirectToSlider('v-dep','s-dep',1000000,2500000);
+  syncDirectToSlider('v-rent','s-rent',100000,250000);
+  syncDirectToSlider('v-mgmt','s-mgmt',30000,100000);
   document.getElementById('v-vac').textContent=document.getElementById('s-vac').value+'%';
   document.getElementById('v-rg').textContent=document.getElementById('s-rg').value+'%';
   document.getElementById('v-dy').textContent=document.getElementById('s-dy').value+'%';
@@ -476,8 +511,37 @@ function updateLabels(){
   document.getElementById('v-rn').textContent=document.getElementById('s-rn').value+'만';
 }
 
-['dep','rent','mgmt','vac','rg','dy','crb','crs','ltv','lr','at','af','rn'].forEach(k=>{
-  const id='s-'+k; const vid='v-'+k;
+// 직접 입력 3개: input/change 이벤트 → 슬라이더 동기화 후 계산
+['dep','rent','mgmt'].forEach(k=>{
+  const vid='v-'+k; const sid='s-'+k;
+  const mins={dep:1000000,rent:100000,mgmt:30000};
+  const maxs={dep:2500000,rent:250000,mgmt:100000};
+  // 타이핑 중 실시간 계산
+  document.getElementById(vid).addEventListener('input',()=>{
+    const raw=parseComma(vid);
+    if(!isNaN(raw)&&raw>0){
+      document.getElementById(sid).value=Math.min(Math.max(raw,mins[k]),maxs[k]);
+      update();
+    }
+  });
+  // 포커스 아웃 시 콤마 포맷 정리
+  document.getElementById(vid).addEventListener('blur',()=>{
+    const raw=parseComma(vid);
+    const clamped=Math.min(Math.max(raw||0,mins[k]),maxs[k]);
+    document.getElementById(vid).value=clamped.toLocaleString('ko-KR');
+    document.getElementById(sid).value=clamped;
+    update();
+  });
+  // 슬라이더 움직이면 직접입력 필드도 업데이트
+  document.getElementById(sid).addEventListener('input',()=>{
+    syncSliderToDirect(sid,vid);
+    update();
+  });
+});
+
+// 나머지 슬라이더
+['vac','rg','dy','crb','crs','ltv','lr','at','af','rn'].forEach(k=>{
+  const id='s-'+k;
   document.getElementById(id).addEventListener('input',()=>{updateLabels();update();});
 });
 
