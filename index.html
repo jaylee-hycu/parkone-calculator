@@ -417,6 +417,7 @@ function renderCF(r,p){
     {sep:true},
     {lbl:'보증금',         y0:null, vals:[...r.deps.slice(0,5),r.deps[5]]},
     {lbl:'연임대료',       y0:null, vals:[...r.rents.slice(0,5),r.rents[5]]},
+    {lbl:'연관리비',       y0:null, vals:[...r.mgmts.slice(0,5),r.mgmts[5]]},
     {lbl:'보증금 운용이자',y0:null, vals:[...r.dis.slice(0,5),r.dis[5]]},
     {lbl:'영업경비 (△)',  y0:null, vals:[...r.opexs.slice(0,5).map(v=>-v),-r.opexs[5]]},
     {lbl:'NOI',            y0:null, vals:[...r.nois.slice(0,5),r.nois[5]], cls:'total'},
