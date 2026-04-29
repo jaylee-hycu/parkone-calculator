@@ -301,11 +301,27 @@ function getP(){
   };
 }
 
+// XIRR 방식: Excel과 동일하게 실제 날짜(일수/365) 기반으로 할인
+// Y0=2025-12-31, Y1=2026-12-31 ... Y5=2030-12-31
+// 2028년 윤년으로 Y3 구간이 366일 → Excel XIRR과 완전 일치
+const XIRR_DATES = (function(){
+  const base = new Date(2025,11,31).getTime();
+  const ends = [
+    new Date(2025,11,31), new Date(2026,11,31), new Date(2027,11,31),
+    new Date(2028,11,31), new Date(2029,11,31), new Date(2030,11,31)
+  ];
+  const MS_PER_YEAR = 365 * 24 * 3600 * 1000;
+  return ends.map(d => (d.getTime() - base) / MS_PER_YEAR);
+})();
+
 function calcIRR(cfs){
-  function npv(r){return cfs.reduce((s,c,i)=>s+c/Math.pow(1+r,i),0);}
-  let lo=-0.99,hi=10;
-  if(npv(lo)*npv(hi)>0)return null;
-  for(let i=0;i<100;i++){const m=(lo+hi)/2;npv(m)>0?lo=m:hi=m;}
+  // XIRR: NPV = Σ cf_i / (1+r)^t_i = 0  (t_i = 실제 날짜 분수, Excel XIRR과 동일)
+  function npv(r){
+    return cfs.reduce((s,c,i) => s + c / Math.pow(1+r, XIRR_DATES[i]), 0);
+  }
+  let lo=-0.99, hi=10;
+  if(npv(lo)*npv(hi) > 0) return null;
+  for(let i=0; i<200; i++){ const m=(lo+hi)/2; npv(m)>0 ? lo=m : hi=m; }
   return (lo+hi)/2;
 }
 
