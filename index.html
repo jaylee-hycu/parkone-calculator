@@ -110,12 +110,12 @@ input[type=range].red-thumb{background:linear-gradient(to right,var(--red-bg),va
 .cf-neg{color:var(--red)!important}
 .pos{color:var(--green);font-weight:600}
 .neg{color:var(--red);font-weight:600}
-.irr-ok{color:var(--green);font-weight:600}
-.irr-warn{color:var(--amber);font-weight:600}
-.irr-neg{color:var(--red);font-weight:600}
+.irr-ok{color:var(--green)!important;font-weight:700;background:var(--green-bg)!important}
+.irr-warn{color:var(--amber)!important;font-weight:700;background:var(--amber-bg)!important}
+.irr-neg{color:var(--red)!important;font-weight:700;background:var(--red-bg)!important}
 .mid{color:var(--blue);font-weight:500}
 .cur-cell{background:var(--blue-bg)!important}
-.tbl tr:hover td{background:var(--surface2)}
+.tbl tr:hover td:not(.irr-ok):not(.irr-warn):not(.irr-neg){background:var(--surface2)}
 .tbl tr.navy:hover td,.tbl tr.navy:hover td.lbl{background:var(--navy)}
 .tbl tr.total:hover td,.tbl tr.group-hdr:hover td{background:inherit}
 
